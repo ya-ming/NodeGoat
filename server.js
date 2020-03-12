@@ -12,6 +12,7 @@ var MongoClient = require("mongodb").MongoClient; // Driver for connecting to Mo
 var http = require("http");
 var marked = require("marked");
 //var helmet = require("helmet");
+//var csp = require("helmet-csp")
 //var nosniff = require('dont-sniff-mimetype');
 var app = express(); // Web framework to handle routing requests
 var routes = require("./app/routes");
@@ -44,16 +45,16 @@ MongoClient.connect(config.db, function(err, db) {
     app.disable("x-powered-by");
 
     // Prevent opening page in frame or iframe to protect from clickjacking
-    app.use(helmet.xframe());
+    app.use(helmet.frameguard());
 
     // Prevents browser from caching and storing page
     app.use(helmet.noCache());
 
     // Allow loading resources only from white-listed domains
-    app.use(helmet.csp());
+    app.use(csp());
 
     // Allow communication only on HTTPS
-    app.use(helmet.hsts());
+    //app.use(helmet.hsts());
 
     // TODO: Add another vuln: https://github.com/helmetjs/helmet/issues/26
     // Enable XSS filter in IE (On by default)
@@ -63,7 +64,7 @@ MongoClient.connect(config.db, function(err, db) {
     // app.use(helmet.xssFilter({ setOnOldIE: true }));
 
     // Forces browser to only use the Content-Type set in the response header instead of sniffing or guessing it
-    app.use(nosniff());
+    app.use(helmet.noSniff());
     */
 
     // Adding/ remove HTTP Headers for security
